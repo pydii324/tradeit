@@ -5,6 +5,7 @@ use Inertia\Inertia;
 
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\BalanceController;
+use App\Http\Controllers\NewsController;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -24,6 +25,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     # /balance
     Route::get('balance', [BalanceController::class, 'showBalanceView'])->name('balance');
+
+    # /news
+    Route::get('news', [NewsController::class, 'showNews'])->name('show.news');
+
+    Route::get('news/crypto', [NewsController::class, 'showCryptoNews'])->name('show.crypto.news');
+    Route::get('news/forex', [NewsController::class, 'showForexNews'])->name('show.forex.news');
+    Route::get('news/energy', [NewsController::class, 'showEnergyNews'])->name('show.energy.news');
 });
 
 require __DIR__.'/settings.php';

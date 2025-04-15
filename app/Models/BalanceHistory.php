@@ -24,21 +24,8 @@ class BalanceHistory extends Model
      * Method for getting the balance history, grouped by months
      * Метод за взимане на историята на баланса, групирани за седмица
      */
-    public static function getHistoryByMonths($userId)
+    public static function getLast50()
     {
-        return self::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, SUM(balance) as total_balance')
-            ->where('user_id', $userId)
-            ->groupBy('month')
-            ->orderBy('month')
-            ->get()
-            ->map(function ($item) {
-                $carbonDate = Carbon::createFromFormat('Y-m', $item->month);
-                return [
-                    'month' => $carbonDate->format('F'), // "January"
-                    'year' => $carbonDate->format('Y'),
-                    'label' => $carbonDate->format('F Y'), // "January 2024"
-                    'total' => $item->total_balance,
-                ];
-            });
+        //
     }
 }

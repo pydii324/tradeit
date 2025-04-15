@@ -1,13 +1,11 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts"
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -18,14 +16,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+interface BalanceHistoryProps {
+  chartData: Array<any>;
+}
 
 const chartConfig = {
   desktop: {
@@ -38,12 +31,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function BalanceHistory() {
+export function BalanceHistoryChart({ chartData }: BalanceHistoryProps) {
   return (
     <Card>
       <CardHeader>
         <CardTitle>История на баланс</CardTitle>
-        <CardDescription>От началото на 2024</CardDescription>
+        <CardDescription>От началото на годината</CardDescription>
       </CardHeader>
       <CardContent>
         {chartData.length > 0 ? (

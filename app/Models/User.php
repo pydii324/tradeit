@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -65,5 +66,15 @@ class User extends Authenticatable
             ['user_id' => Auth::id()],
             ['balance' => 0] // Default value for balance, if none foudn
         )->balance;
+    }
+
+    public function getBalanceHistoryThisYear()
+    {
+        $startOfYear = Carbon::now()->startOfYear();
+        $today = Carbon::now();
+
+        return BalanceHistory::where('user_id', Auth::id())
+            ->whereBetween('created_at', [$startOfYear, $today])
+        ->get();
     }
 }

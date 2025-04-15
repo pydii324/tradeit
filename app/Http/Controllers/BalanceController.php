@@ -11,8 +11,12 @@ class BalanceController extends Controller
 {
     public function showBalanceView()
     {
+        $balance = Auth::user()->getBalance();
+        $balance_history = Auth::user()->getBalanceHistoryThisYear();
+        
         return Inertia::render('balance/balance', [
-            'balance' => Auth::user()->getBalance(),
+            'balance' => $balance,
+            'balance_history' => $balance_history,
         ]);
     }
 }
