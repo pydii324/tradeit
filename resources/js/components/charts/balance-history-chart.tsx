@@ -33,7 +33,7 @@ const chartConfig = {
 
 export function BalanceHistoryChart({ chartData }: BalanceHistoryProps) {
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>История на баланс</CardTitle>
         <CardDescription>От началото на годината</CardDescription>

@@ -42,7 +42,6 @@ class NewsController extends Controller
         $results = $response->json();
         #dd($results);
         # Saving to db
-        $articles = [];
         foreach ($results['articles'] as $article) {
             $articles[] = News::createNew($article, 'forex');
         }

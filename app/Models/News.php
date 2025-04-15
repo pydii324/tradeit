@@ -11,6 +11,7 @@ class News extends Model
 
     protected $casts = [
         'published_at' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -25,6 +26,16 @@ class News extends Model
         # Сами си го задаваме
         'category',
     ];
+
+    public function getCreatedAtHourFormattedAttribute()
+    {
+        return Carbon::parse($this->created_at)->format('H:m');
+    }
+
+    public function getCreatedAtDateFormattedAttribute()
+    {
+        return Carbon::parse($this->created_at)->format('d.m.Y');
+    }
 
     public static function createNew(Array $article_data, String $category)
     {

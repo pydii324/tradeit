@@ -20,15 +20,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    # /trades
-    Route::get('trades', [TradeController::class, 'showTradesView'])->name('trades');
+    # /trades/futures
+    Route::get('trades/futures', [TradeController::class, 'showFuturesView'])->name('trades.futures');
+    # /trades/spot
+    Route::get('trades/spot', [TradeController::class, 'showSpotView'])->name('trades.spot');
 
     # /balance
     Route::get('balance', [BalanceController::class, 'showBalanceView'])->name('balance');
 
     # /news
     Route::get('news', [NewsController::class, 'showNews'])->name('show.news');
-
     Route::get('news/crypto', [NewsController::class, 'showCryptoNews'])->name('show.crypto.news');
     Route::get('news/forex', [NewsController::class, 'showForexNews'])->name('show.forex.news');
     Route::get('news/energy', [NewsController::class, 'showEnergyNews'])->name('show.energy.news');

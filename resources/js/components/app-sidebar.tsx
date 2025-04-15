@@ -40,11 +40,6 @@ export function AppSidebar() {
             icon: Bitcoin
         },
         {
-            title: 'Forex',
-            href: '/news/forex',
-            icon: DollarSign
-        },
-        {
             title: 'Energy',
             href: '/news/energy',
             icon: Factory
