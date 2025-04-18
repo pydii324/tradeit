@@ -9,9 +9,9 @@ use App\Models\Balance;
 
 class TradeController extends Controller
 {
-    public function showTradesView()
+    public function showFuturesView()
     {
-        return Inertia::render('trades', [
+        return Inertia::render('futures/futures', [
             'balance' => Balance::where('user_id', Auth::id())->first()->balance,
         ]);
     }

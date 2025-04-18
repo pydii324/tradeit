@@ -7,10 +7,8 @@ import TradingViewChart from '@/components/charts/tradingview-chart';
 import { useState, useEffect } from 'react';
 import WatchlistItem from '@/components/ticker';
 
-
-
 export default function Dashboard() {
-    const [chartTheme, setChartTheme] = useState('light');
+    const [chartTheme, setChartTheme] = useState('dark');
 
     useEffect(() => {
       const checkTheme = () => {
@@ -42,23 +40,40 @@ export default function Dashboard() {
         {
           symbol: 'NASDAQ:AAPL',
           title: 'Apple Inc.',
-          img: '/images/tickers/aapl.png',
         },
         {
           symbol: 'NASDAQ:GOOGL',
           title: 'Alphabet Inc.',
-          img: '/images/tickers/googl.png',
         },
         {
           symbol: 'NASDAQ:MSFT',
           title: 'Microsoft Corp.',
-          img: '/images/tickers/msft.png',
+        },
+        {
+            symbol: 'NASDAQ:NVDA',
+            title: 'Nvidia',
         },
         {
           symbol: 'NASDAQ:TSLA',
           title: 'Tesla Inc.',
-          img: '/images/tickers/tsla.png',
         },
+        {
+            symbol: 'BTCUSDT',
+            title: 'Bitcoin',
+        },
+        {
+            symbol: 'ETHUSDT',
+            title: 'Ethereum',
+        },
+        {
+            symbol: 'XRPUSDT',
+            title: 'XRP',
+        },
+        {
+            symbol: 'SOLUSDT',
+            title: 'Solana',
+        },
+        
     ];
     const [selectedSymbol, setSelectedSymbol] = useState(watchlist[0].symbol);
 
@@ -68,10 +83,10 @@ export default function Dashboard() {
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <SectionCards />
                 {/* Main Section */}
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border shadow md:min-h-min">
+                <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 overflow-hidden rounded-xl border shadow md:min-h-min">
                     <div className="flex h-full w-full">
                         {/* Watchlist */}
-                        <aside className="w-[300px]">
+                        <aside className="flex flex-col sm:min-w-[200px] md:min-w-[250px] lg:max-w-[400px]">
                             {/* Header of Watchlist */}
                             <div className="sticky top-0 py-2">
                                 <h2 className="text-center text-lg sm:text-lg md:text-xl font-bold text-foreground">Watchlist</h2>
@@ -92,7 +107,7 @@ export default function Dashboard() {
                         {/* TradingView Chart */}
                         <div className="flex flex-1">
                             <TradingViewChart
-                                symbol="BTCUSDT"
+                                symbol={selectedSymbol}
                                 theme={chartTheme}
                             />
                         </div>

@@ -21,9 +21,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     # /trades/futures
-    Route::get('trades/futures', [TradeController::class, 'showFuturesView'])->name('trades.futures');
+    Route::get('futures', [TradeController::class, 'showFuturesView'])->name('futures');
     # /trades/spot
-    Route::get('trades/spot', [TradeController::class, 'showSpotView'])->name('trades.spot');
+    Route::get('spot', [TradeController::class, 'showSpotView'])->name('spot');
 
     # /balance
     Route::get('balance', [BalanceController::class, 'showBalanceView'])->name('balance');

@@ -4,17 +4,12 @@ import React from 'react';
 export default function WatchlistItem({ item, isActive, onClick }) {
   return (
     <li
-      onClick={() => onClick(item.title)}
-      className={`flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-100 transition ${
-        isActive ? 'bg-foreground text-secondary' : ''
+    onClick={() => onClick(item.symbol)}
+      className={`flex items-center gap-3 p-2 cursor-pointer hover:bg-muted-foreground/50 border-b transition ${
+        isActive ? 'bg-muted-foreground/30' : ''
       }`}
     >
-      <img
-        src={item.img}
-        alt={item.title}
-        className="w-8 h-8 object-contain"
-      />
-      <div className="hover:text-secondary-foreground">
+      <div>
         <p className="font-semibold text-accent-foreground ">{item.title}</p>
         <p className="text-xs">{item.symbol}</p>
       </div>
