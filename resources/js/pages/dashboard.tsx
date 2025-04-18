@@ -86,7 +86,7 @@ export default function Dashboard() {
                 <div className="border-sidebar-border/70 dark:border-sidebar-border relative flex-1 overflow-hidden rounded-xl border shadow md:min-h-min">
                     <div className="flex h-full w-full">
                         {/* Watchlist */}
-                        <aside className="flex flex-col sm:min-w-[200px] md:min-w-[250px] lg:max-w-[400px]">
+                        <aside className="flex flex-col overflow-y-auto sm:min-w-[200px] md:min-w-[250px] lg:max-w-[400px]">
                             {/* Header of Watchlist */}
                             <div className="sticky top-0 py-2">
                                 <h2 className="text-center text-lg sm:text-lg md:text-xl font-bold text-foreground">Watchlist</h2>

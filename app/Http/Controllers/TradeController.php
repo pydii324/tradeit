@@ -11,7 +11,7 @@ class TradeController extends Controller
 {
     public function showFuturesView()
     {
-        return Inertia::render('futures/futures', [
+        return Inertia::render('futures/futures-trading-page', [
             'balance' => Balance::where('user_id', Auth::id())->first()->balance,
         ]);
     }

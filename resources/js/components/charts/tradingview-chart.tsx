@@ -1,11 +1,18 @@
 // resources/js/Components/TradingViewChart.jsx
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-const TradingViewChart = ({ symbol, theme }) => {
+const TradingViewChart = ({ symbol = "BINANCE:BTCUSDT" }) => {
   const containerRef = useRef();
+  const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    // Clear any existing widget
+    // Get current theme from <html class="dark">
+    const isDark = document.documentElement.classList.contains('dark');
+    setTheme(isDark ? 'dark' : 'light');
+  }, []);
+
+  useEffect(() => {
+    // Clear container before adding the script again
     containerRef.current.innerHTML = '';
 
     const script = document.createElement('script');
@@ -16,12 +23,12 @@ const TradingViewChart = ({ symbol, theme }) => {
       if (window.TradingView) {
         new window.TradingView.widget({
           container_id: 'tradingview_chart',
-          symbol: symbol,
+          symbol,
           interval: 'D',
           width: '100%',
-          height: '100%',
+          height: 400, // 👈 FIX: Set explicit height
           timezone: 'Etc/UTC',
-          theme: theme,
+          theme,
           style: '1',
           locale: 'en',
           toolbar_bg: '#f1f3f6',
@@ -36,12 +43,13 @@ const TradingViewChart = ({ symbol, theme }) => {
     containerRef.current.appendChild(script);
 
     return () => {
-      // Clean up on unmount or dependency change
       containerRef.current.innerHTML = '';
     };
-  }, [symbol, theme]); // 🧠 Trigger effect when symbol or theme changes
+  }, [symbol, theme]);
 
-  return <div className="w-full h-full" id="tradingview_chart" ref={containerRef}></div>;
+  return (
+    <div className="w-full h-[400px]" id="tradingview_chart" ref={containerRef}></div> // 👈 FIX: Apply same height here
+  );
 };
 
 export default TradingViewChart;

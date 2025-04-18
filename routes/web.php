@@ -20,8 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    # /trades/futures
-    Route::get('futures', [TradeController::class, 'showFuturesView'])->name('futures');
+    
     # /trades/spot
     Route::get('spot', [TradeController::class, 'showSpotView'])->name('spot');
 
@@ -33,6 +32,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('news/crypto', [NewsController::class, 'showCryptoNews'])->name('show.crypto.news');
     Route::get('news/forex', [NewsController::class, 'showForexNews'])->name('show.forex.news');
     Route::get('news/energy', [NewsController::class, 'showEnergyNews'])->name('show.energy.news');
+
+    # /trades/futures
+    Route::get('futures', [TradeController::class, 'showFuturesView'])->name('futures');
+    Route::post('/futures/open', [FuturesPositionController::class, 'open']);
+    Route::post('/futures/{position}/close', [FuturesPositionController::class, 'close']);
 });
 
 require __DIR__.'/settings.php';
