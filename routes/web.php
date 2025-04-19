@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\TradeController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\FuturesPositionController;
 
 use Illuminate\Support\Facades\Auth;
 

@@ -1,9 +1,9 @@
 // resources/js/Components/TradingViewChart.jsx
 import React, { useEffect, useRef, useState } from 'react';
 
-const TradingViewChart = ({ symbol = "BINANCE:BTCUSDT" }) => {
+const TradingViewChart = ({ symbol = "BINANCE:BTCUSDT", height = 400 }: {symbol: string, height: number | string}) => {
   const containerRef = useRef();
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
     // Get current theme from <html class="dark">
@@ -26,7 +26,7 @@ const TradingViewChart = ({ symbol = "BINANCE:BTCUSDT" }) => {
           symbol,
           interval: 'D',
           width: '100%',
-          height: 400, // 👈 FIX: Set explicit height
+          height: height,
           timezone: 'Etc/UTC',
           theme,
           style: '1',
@@ -48,7 +48,7 @@ const TradingViewChart = ({ symbol = "BINANCE:BTCUSDT" }) => {
   }, [symbol, theme]);
 
   return (
-    <div className="w-full h-[400px]" id="tradingview_chart" ref={containerRef}></div> // 👈 FIX: Apply same height here
+    <div className="w-full" id="tradingview_chart" ref={containerRef}></div>
   );
 };
 

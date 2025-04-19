@@ -11,6 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::dropIfExists('futures_positions');
         Schema::create('futures_positions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
@@ -23,6 +24,8 @@ return new class extends Migration
             $table->decimal('exit_price', 20, 10)->nullable();
             $table->decimal('pnl', 20, 10)->nullable(); // profit or loss
             $table->timestamp('closed_at')->nullable();
+            $table->decimal('stop_loss', 20, 10)->nullable();
+            $table->decimal('take_profit', 20, 10)->nullable();
             $table->timestamps();
         });
     }

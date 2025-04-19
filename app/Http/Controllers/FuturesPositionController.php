@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\FuturesPosition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class FuturesPositionController extends Controller
 {
     public function open(Request $request)
     {
+        #dd($request);
         $validated = $request->validate([
             'market' => 'required|string',
             'type' => 'required|in:long,short',
             'entry_price' => 'required|numeric',
+            'stop_loss' => 'nullable|numeric',
+            'take_profit' => 'nullable|numeric',
             'amount' => 'required|numeric',
             'leverage' => 'required|integer|min:1|max:100',
         ]);
@@ -22,10 +26,7 @@ class FuturesPositionController extends Controller
     
         $position = FuturesPosition::create($validated);
     
-        return response()->json([
-            'message' => 'Position opened',
-            'position' => $position,
-        ]);
+        return Redirect::back()->with('success', 'Position opened.');
     }
 
     public function close(Request $request, FuturesPosition $position)

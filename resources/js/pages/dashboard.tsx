@@ -108,7 +108,7 @@ export default function Dashboard() {
                         <div className="flex flex-1">
                             <TradingViewChart
                                 symbol={selectedSymbol}
-                                theme={chartTheme}
+                                height={'100%'}
                             />
                         </div>
                     </div>

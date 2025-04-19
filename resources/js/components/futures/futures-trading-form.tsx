@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowDown, ArrowUp, ChevronDown, Info, Minus, Plus, RefreshCw } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -13,13 +13,44 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export default function FuturesTradingForm() {
+import { router } from "@inertiajs/react"
+
+type Props = {
+  selectedPair: string,
+  onPairChange: (pair: string) => void;
+}
+
+export default function FuturesTradingForm({ selectedPair, onPairChange }: Props) {
   const [amount, setAmount] = useState<number>(100)
   const [leverage, setLeverage] = useState<number>(5)
   const [stopLoss, setStopLoss] = useState<number | null>(null)
   const [takeProfit, setTakeProfit] = useState<number | null>(null)
-  const [currentPrice, setCurrentPrice] = useState<number>(42568.75)
+  const [currentPrice, setCurrentPrice] = useState<number>(0)
   const [direction, setDirection] = useState<"long" | "short">("long")
+
+  useEffect(() => {
+    if (!selectedPair) return;
+  
+    const symbol = selectedPair.replace("/", ""); // e.g., BTC/USDT -> BTCUSDT
+  
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+        const data = await response.json();
+        setCurrentPrice(parseFloat(data.price));
+      } catch (error) {
+        console.error("Failed to fetch price from Binance", error);
+      }
+    };
+  
+    fetchPrice(); // initial fetch
+  
+    // Optional: Auto-refresh every second
+    const interval = setInterval(fetchPrice, 1000);
+  
+    return () => clearInterval(interval); // cleanup
+  }, [selectedPair]); // 👈 run this whenever selectedPair changes
+  
 
   // Calculate position details
   const positionSize = amount * leverage
@@ -67,6 +98,18 @@ export default function FuturesTradingForm() {
 
   const potentialProfit = calculatePnL()
 
+  const handleSubmit = () => {
+    router.post('/futures/open', {
+      market: selectedPair,
+      amount: amount,
+      leverage: leverage,
+      type: direction,
+      entry_price: currentPrice,
+      stop_loss: stopLoss,
+      take_profit: takeProfit,
+    })
+  }
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <Card className="bg-zinc-900 border-zinc-800 text-zinc-100">
@@ -74,15 +117,17 @@ export default function FuturesTradingForm() {
           <div className="flex items-center justify-between">
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-xl">BTC/USDT</span>
-                <Select defaultValue="perpetual">
-                  <SelectTrigger className="w-[140px] h-8 bg-zinc-800 border-zinc-700 text-sm">
+                
+                <Select value={selectedPair} onValueChange={onPairChange}>
+                  <SelectTrigger className="w-[160px] h-10 bg-zinc-800 border-zinc-700 text-sm">
                     <SelectValue placeholder="Contract" />
                   </SelectTrigger>
                   <SelectContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
-                    <SelectItem value="perpetual">Perpetual</SelectItem>
-                    <SelectItem value="quarterly">Quarterly</SelectItem>
-                    <SelectItem value="bimonthly">Bi-Monthly</SelectItem>
+                    <SelectItem value="BTCUSDT">BTC/USDT</SelectItem>
+                    <SelectItem value="ETHUSDT">ETH/USDT</SelectItem>
+                    <SelectItem value="XRPUSDT">XRP/USDT</SelectItem>
+                    <SelectItem value="SOLUSDT">SOL/USDT</SelectItem>
+                    <SelectItem value="BNBUSDT">BNB/USDT</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -117,9 +162,6 @@ export default function FuturesTradingForm() {
                   </TabsTrigger>
                   <TabsTrigger value="limit" className="flex-1">
                     Limit
-                  </TabsTrigger>
-                  <TabsTrigger value="stop" className="flex-1">
-                    Stop
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="market" className="mt-4 space-y-4">
@@ -188,8 +230,8 @@ export default function FuturesTradingForm() {
                       <span className="text-sm font-medium">{leverage}x</span>
                     </div>
                     <Slider
-                      defaultValue={[5]}
-                      max={20}
+                      defaultValue={[10]}
+                      max={100}
                       min={1}
                       step={1}
                       value={[leverage]}
@@ -198,7 +240,7 @@ export default function FuturesTradingForm() {
                     />
                     <div className="flex justify-between text-xs text-zinc-500">
                       <span>1x</span>
-                      <span>20x</span>
+                      <span>100x</span>
                     </div>
                   </div>
 
@@ -401,6 +443,7 @@ export default function FuturesTradingForm() {
 
               <div className="mt-6">
                 <Button
+                  onClick={handleSubmit}
                   className={`w-full h-14 text-lg font-medium ${
                     direction === "long"
                       ? "bg-emerald-600 hover:bg-emerald-700 text-white"

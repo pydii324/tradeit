@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Head } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
@@ -21,6 +21,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const FuturesTradingPage: React.FC = () => {
+  const [selectedPair, setSelectedPair] = useState("BTCUSDT");
+
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Futures Trading" />
@@ -29,10 +31,12 @@ const FuturesTradingPage: React.FC = () => {
         {/* Left Column: Chart, Order Form, Positions */}
         <div className="col-span-12 lg:col-span-8 space-y-4">
           <Card>
-            <TradingViewChart />
+              <TradingViewChart symbol={selectedPair} height={400} />
           </Card>
           <Card>
-            <FuturesTradingForm />
+            <FuturesTradingForm
+              selectedPair={selectedPair}
+              onPairChange={setSelectedPair} />
           </Card>
           <Card>
             <PositionsTable />

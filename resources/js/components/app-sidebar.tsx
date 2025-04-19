@@ -26,11 +26,6 @@ export function AppSidebar() {
             href: '/futures',
             icon: ChartCandlestick
         },
-        {
-            title: 'Options',
-            href: '/options',
-            icon: ScrollText
-        },
     ];
 
     const newsNavItems: NavItem[] = [
