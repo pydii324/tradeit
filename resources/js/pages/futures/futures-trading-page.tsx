@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Head } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
@@ -22,6 +22,30 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const FuturesTradingPage: React.FC = () => {
   const [selectedPair, setSelectedPair] = useState("BTCUSDT");
+  const [currentPrice, setCurrentPrice] = useState<number>(0)
+
+  useEffect(() => {
+    if (!selectedPair) return;
+  
+    const symbol = selectedPair.replace("/", ""); // e.g., BTC/USDT -> BTCUSDT
+  
+    const fetchPrice = async () => {
+      try {
+        const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
+        const data = await response.json();
+        setCurrentPrice(parseFloat(data.price));
+      } catch (error) {
+        console.error("Failed to fetch price from Binance", error);
+      }
+    };
+  
+    fetchPrice(); // initial fetch
+  
+    // Optional: Auto-refresh every second
+    const interval = setInterval(fetchPrice, 1000);
+  
+    return () => clearInterval(interval); // cleanup
+  }, [selectedPair]); // 👈 run this whenever selectedPair changes
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -36,10 +60,12 @@ const FuturesTradingPage: React.FC = () => {
           <Card>
             <FuturesTradingForm
               selectedPair={selectedPair}
-              onPairChange={setSelectedPair} />
+              onPairChange={setSelectedPair}
+              currentPrice={currentPrice} />
           </Card>
           <Card>
-            <PositionsTable />
+            <PositionsTable
+              currentPrice={currentPrice} />
           </Card>
         </div>
 

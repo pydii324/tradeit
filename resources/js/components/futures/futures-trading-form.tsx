@@ -16,40 +16,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { router } from "@inertiajs/react"
 
 type Props = {
-  selectedPair: string,
+  selectedPair: string;
   onPairChange: (pair: string) => void;
+  currentPrice: Number;
 }
 
-export default function FuturesTradingForm({ selectedPair, onPairChange }: Props) {
+export default function FuturesTradingForm({ selectedPair, onPairChange, currentPrice }: Props) {
   const [amount, setAmount] = useState<number>(100)
   const [leverage, setLeverage] = useState<number>(5)
   const [stopLoss, setStopLoss] = useState<number | null>(null)
   const [takeProfit, setTakeProfit] = useState<number | null>(null)
-  const [currentPrice, setCurrentPrice] = useState<number>(0)
   const [direction, setDirection] = useState<"long" | "short">("long")
-
-  useEffect(() => {
-    if (!selectedPair) return;
-  
-    const symbol = selectedPair.replace("/", ""); // e.g., BTC/USDT -> BTCUSDT
-  
-    const fetchPrice = async () => {
-      try {
-        const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
-        const data = await response.json();
-        setCurrentPrice(parseFloat(data.price));
-      } catch (error) {
-        console.error("Failed to fetch price from Binance", error);
-      }
-    };
-  
-    fetchPrice(); // initial fetch
-  
-    // Optional: Auto-refresh every second
-    const interval = setInterval(fetchPrice, 1000);
-  
-    return () => clearInterval(interval); // cleanup
-  }, [selectedPair]); // 👈 run this whenever selectedPair changes
   
 
   // Calculate position details

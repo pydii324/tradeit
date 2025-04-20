@@ -37,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     # /trades/futures
     Route::get('futures', [TradeController::class, 'showFuturesView'])->name('futures');
     Route::post('/futures/open', [FuturesPositionController::class, 'open']);
-    Route::post('/futures/{position}/close', [FuturesPositionController::class, 'close']);
+    Route::post('/futures/positions/{position}/close', [FuturesPositionController::class, 'close']);
 });
 
 require __DIR__.'/settings.php';
