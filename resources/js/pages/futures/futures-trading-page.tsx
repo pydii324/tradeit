@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import AppLayout from "@/layouts/app-layout";
 import { type BreadcrumbItem } from "@/types";
 
@@ -24,6 +24,10 @@ const FuturesTradingPage: React.FC = () => {
   const [selectedPair, setSelectedPair] = useState("BTCUSDT");
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [priceChangePercent, setPriceChangePercent] = useState<number>(0);
+
+  {/* Positions from the controler */}
+  const { props } = usePage();
+  const [positions, setPositions] = useState(props.positions);
 
   useEffect(() => {
     if (!selectedPair) return;

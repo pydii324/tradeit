@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { usePage, router } from "@inertiajs/react"
 import ClosePositionButton from "./close-position"
 
@@ -24,8 +25,6 @@ interface ClosePositionProps {
 }
 
 const PositionsTable = ({ currentPrice }: PositionsTableProps) => {
-  const { open_positions } = usePage().props;
-
   const calculatePNL = (position: Position, currentPrice: number) => {
     const { amount: margin, entry_price: entry, leverage, type } = position
   

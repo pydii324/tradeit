@@ -16,13 +16,14 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { router } from "@inertiajs/react"
 
 type Props = {
+  positions:
   selectedPair: string;
   onPairChange: (pair: string) => void;
   currentPrice: Number;
   priceChangePercent: Number;
 }
 
-export default function FuturesTradingForm({ selectedPair, onPairChange, currentPrice, priceChangePercent }: Props) {
+export default function FuturesTradingForm({positions, selectedPair, onPairChange, currentPrice, priceChangePercent }: Props) {
   const [amount, setAmount] = useState<number>(100)
   const [leverage, setLeverage] = useState<number>(5)
   const [stopLoss, setStopLoss] = useState<number | null>(null)
@@ -85,11 +86,15 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
       entry_price: currentPrice,
       stop_loss: stopLoss,
       take_profit: takeProfit,
+    }, {
+      onSuccess: (page) => {
+        const newPosition = page.props.newPosition;
+      }
     })
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full mx-auto">
       <Card className="bg-zinc-900 border-zinc-800 text-zinc-100">
         <CardHeader className="border-b border-zinc-800">
           <div className="flex items-center justify-between">
@@ -109,7 +114,6 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
                   </SelectContent>
                 </Select>
               </div>
-              <CardDescription className="text-zinc-400">Bitcoin / Tether USD</CardDescription>
             </div>
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
@@ -274,6 +278,10 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
                     <span className="font-medium">${positionSize.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
+                    <span className="text-zinc-400">Initial Margin</span>
+                    <span className="font-medium">${amount.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-zinc-400">Entry Price</span>
                     <span className="font-medium">${currentPrice.toLocaleString()}</span>
                   </div>
@@ -303,45 +311,6 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
                       </span>
                     </div>
                   )}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-sm font-medium text-zinc-400 mb-3">Fees & Margin</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-zinc-400">Initial Margin</span>
-                    <span className="font-medium">${amount.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-zinc-400">Opening Fee (0.05%)</span>
-                    <span className="font-medium">${(positionSize * 0.0005).toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="flex items-center gap-1">
-                      <span className="text-zinc-400">Funding Rate</span>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="h-3 w-3 text-zinc-500" />
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
-                            <p className="text-xs max-w-[200px]">
-                              Periodic payments between long and short positions based on market conditions
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    <span className="font-medium text-emerald-500">-0.01% (8h)</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-2">
-                <div className="flex items-center justify-between mb-3">
-                  <Label className="text-zinc-400 text-sm">Advanced Settings</Label>
-                  <Switch id="advanced" />
                 </div>
               </div>
             </div>
@@ -391,25 +360,6 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
                           <SelectItem value="cross" disabled>Cross</SelectItem>
                         </SelectContent>
                       </Select>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <span className="text-sm text-zinc-400">Reduce Only</span>
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <Info className="h-3 w-3 text-zinc-500" />
-                            </TooltipTrigger>
-                            <TooltipContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
-                              <p className="text-xs max-w-[200px]">
-                                Orders will only reduce your position, not increase it
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                      <Switch id="reduce-only" />
                     </div>
                   </div>
                 </div>
