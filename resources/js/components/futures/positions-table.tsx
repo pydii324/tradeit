@@ -16,7 +16,6 @@ interface Position {
 
 interface PositionsTableProps {
   currentPrice: number
-  //closePosition: (id: number) => void
 }
 
 interface ClosePositionProps {
@@ -25,6 +24,8 @@ interface ClosePositionProps {
 }
 
 const PositionsTable = ({ currentPrice }: PositionsTableProps) => {
+  const { open_positions } = usePage().props;
+
   const calculatePNL = (position: Position, currentPrice: number) => {
     const { amount: margin, entry_price: entry, leverage, type } = position
   

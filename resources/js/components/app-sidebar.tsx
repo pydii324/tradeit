@@ -17,11 +17,6 @@ export function AppSidebar() {
             icon: LayoutGrid,
         },
         {
-            title: 'Spot',
-            href: '/spot',
-            icon: WalletMinimal
-        },
-        {
             title: 'Futures',
             href: '/futures',
             icon: ChartCandlestick
@@ -43,7 +38,7 @@ export function AppSidebar() {
     
     const footerNavItems: NavItem[] = [
         {
-            title: `Balance: $${balance}`,
+            title: `Balance: $${Number(balance).toFixed(2)}`,
             href: '/balance',
             icon: Wallet,
         },

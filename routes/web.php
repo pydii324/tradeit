@@ -21,12 +21,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('dashboard');
 
-    
-    # /trades/spot
-    Route::get('spot', [TradeController::class, 'showSpotView'])->name('spot');
-
     # /balance
     Route::get('balance', [BalanceController::class, 'showBalanceView'])->name('balance');
+    Route::post('balance/add', [BalanceController::class, 'addToBalance'])->name('balance.add');
 
     # /news
     Route::get('news', [NewsController::class, 'showNews'])->name('show.news');

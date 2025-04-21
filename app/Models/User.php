@@ -68,13 +68,22 @@ class User extends Authenticatable
         )->balance;
     }
 
-    public function getBalanceHistoryThisYear()
+    public function addToBalance(float $amount)
     {
-        $startOfYear = Carbon::now()->startOfYear();
-        $today = Carbon::now();
+        $balance = Balance::firstOrCreate(
+            ['user_id' => Auth::id()],
+            ['balance' => 0] // Default value for balance, if none foudn
+        );
 
-        return BalanceHistory::where('user_id', Auth::id())
-            ->whereBetween('created_at', [$startOfYear, $today])
-        ->get();
+        $balance->balance = $amount;
+        return $balance->save();
+    }
+
+    public function getBalanceHistory()
+    {
+        return BalanceHistory::where('user_id', Auth::id())->get()->map(function ($balanceHistory) {
+            $balanceHistory->created_at = $balanceHistory->created_at->toIso8601String();
+            return $balanceHistory;
+        });
     }
 }

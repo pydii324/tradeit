@@ -13,14 +13,13 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-import { router } from "@inertiajs/react"
+import { router, usePage } from "@inertiajs/react"
 
 type Props = {
-  positions:
   selectedPair: string;
   onPairChange: (pair: string) => void;
-  currentPrice: Number;
-  priceChangePercent: Number;
+  currentPrice: number; // 👈 lowercase
+  priceChangePercent: number; // 👈 lowercase
 }
 
 export default function FuturesTradingForm({positions, selectedPair, onPairChange, currentPrice, priceChangePercent }: Props) {
@@ -29,12 +28,16 @@ export default function FuturesTradingForm({positions, selectedPair, onPairChang
   const [stopLoss, setStopLoss] = useState<number | null>(null)
   const [takeProfit, setTakeProfit] = useState<number | null>(null)
   const [direction, setDirection] = useState<"long" | "short">("long")
+
+  const { balance } = usePage().props;
   
 
   // Calculate position details
   const positionSize = amount * leverage
   const liquidationPrice =
-    direction === "long" ? currentPrice * (1 - (1 / leverage) * 0.9) : currentPrice * (1 + (1 / leverage) * 0.9)
+  direction === "long"
+    ? currentPrice * (1 - 1 / leverage)
+    : currentPrice * (1 + 1 / leverage);
 
   const handleAmountChange = (value: string) => {
     const numValue = Number.parseFloat(value)
@@ -87,9 +90,7 @@ export default function FuturesTradingForm({positions, selectedPair, onPairChang
       stop_loss: stopLoss,
       take_profit: takeProfit,
     }, {
-      onSuccess: (page) => {
-        const newPosition = page.props.newPosition;
-      }
+      preserveScroll: true,
     })
   }
 
@@ -214,7 +215,7 @@ export default function FuturesTradingForm({positions, selectedPair, onPairChang
                       step={1}
                       value={[leverage]}
                       onValueChange={handleLeverageChange}
-                      className="[&>span:first-child]:bg-zinc-700 [&>span:nth-child(2)]:bg-emerald-500"
+                      className=""
                     />
                     <div className="flex justify-between text-xs text-zinc-500">
                       <span>1x</span>
@@ -340,10 +341,10 @@ export default function FuturesTradingForm({positions, selectedPair, onPairChang
                   <div className="p-4 rounded-lg bg-zinc-800/50 border border-zinc-700">
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-zinc-400">Available Balance</span>
-                      <span className="font-medium">$10,000.00</span>
+                      <span className="font-medium">${balance.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-zinc-400">Max Position</span>
+                      <span className="text-zinc-400">Position size</span>
                       <span className="font-medium">${(10000 * leverage).toLocaleString()}</span>
                     </div>
                   </div>

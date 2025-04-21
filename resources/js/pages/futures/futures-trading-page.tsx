@@ -25,10 +25,6 @@ const FuturesTradingPage: React.FC = () => {
   const [currentPrice, setCurrentPrice] = useState<number>(0);
   const [priceChangePercent, setPriceChangePercent] = useState<number>(0);
 
-  {/* Positions from the controler */}
-  const { props } = usePage();
-  const [positions, setPositions] = useState(props.positions);
-
   useEffect(() => {
     if (!selectedPair) return;
   
@@ -68,18 +64,20 @@ const FuturesTradingPage: React.FC = () => {
         {/* Left Column: Chart, Order Form, Positions */}
         <div className="space-y-4">
           <Card>
-              <TradingViewChart symbol={selectedPair} height={400} />
+            <TradingViewChart symbol={selectedPair} height={400} />
           </Card>
           <Card>
             <FuturesTradingForm
               selectedPair={selectedPair}
               onPairChange={setSelectedPair}
               currentPrice={currentPrice}
-              priceChangePercent={priceChangePercent} />
+              priceChangePercent={priceChangePercent}
+            />
           </Card>
           <Card>
             <PositionsTable
-              currentPrice={currentPrice} />
+              currentPrice={currentPrice} 
+            />
           </Card>
         </div>
 

@@ -11,6 +11,7 @@ const ClosePositionButton = ({ positionId, currentPrice }: ClosePositionProps) =
         router.post(`/futures/positions/${positionId}/close`, {
             exit_price: currentPrice,  // The price at which the position is closed
         }, {
+            preserveScroll: true,
             onSuccess: () => {
                 console.log('Position closed!');
             },
@@ -23,7 +24,7 @@ const ClosePositionButton = ({ positionId, currentPrice }: ClosePositionProps) =
     return (
         <button
             onClick={() => closePosition({ positionId, currentPrice })}
-            className="bg-red-600 text-white px-4 py-2 rounded"
+            className="bg-red-600 text-white px-3 py-1 rounded"
         >
             Close
         </button>

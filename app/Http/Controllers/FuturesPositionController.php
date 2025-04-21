@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App\Models\Balance;
+use App\Models\BalanceHistory;
 use Inertia\Inertia;
 
 class FuturesPositionController extends Controller
@@ -28,7 +29,7 @@ class FuturesPositionController extends Controller
         $validated['user_id'] = $userId;
 
         // Margin calculation (amount * entry price)
-        $margin = $validated['amount'] * $validated['entry_price'];
+        $margin = $validated['amount'];
 
         DB::beginTransaction();
 
@@ -39,29 +40,29 @@ class FuturesPositionController extends Controller
             );
 
             if ($balance->balance < $margin) {
-                // Use Inertia to return a response
-                return Inertia::render('YourComponent', [
-                    'message' => 'Not enough balance to open this position.',
+                return Redirect::back()->with([
                     'success' => false,
-                ]);
+                    'message' => 'Not enough balance to open this position.',
+                ], 422);
             }
 
             $balance->decrement('balance', $margin);
 
-            FuturesPosition::create($validated);
+            $position = FuturesPosition::create($validated);
 
             DB::commit();
 
-            return Inertia::render('YourComponent', [
-                'message' => 'Position opened successfully.',
+            return Redirect::back()->with([
                 'success' => true,
+                'message' => 'Position opened successfully.',
+                'position' => $position,
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return Inertia::render('YourComponent', [
-                'message' => 'Something went wrong while opening the position.',
+            return Redirect::back()->with([
                 'success' => false,
-            ]);
+                'message' => 'Something went wrong.',
+            ], 500);
         }
     }
 
@@ -76,10 +77,7 @@ class FuturesPositionController extends Controller
         ]);
 
         if ($position->status === 'closed') {
-            return Inertia::render('YourComponent', [
-                'message' => 'Position already closed.',
-                'success' => false,
-            ]);
+            return;
         }
 
         $pnl = $this->calculatePnL($position, $validated['exit_price']);
@@ -101,20 +99,25 @@ class FuturesPositionController extends Controller
             );
 
             // Add initial margin back + PnL
-            $initialMargin = $position->amount * $position->entry_price;
+            $initialMargin = $position->amount;
 
             $balance->increment('balance', $initialMargin + $pnl);
 
+            $balance_history = BalanceHistory::create([
+                'user_id' => $userId,
+                'balance' => $balance->balance, 
+            ]);
+
             DB::commit();
 
-            return Inertia::render('YourComponent', [
-                'message' => 'Position closed successfully.',
+            return Redirect::back()->with([
+                'message' => 'Something went wrong.',
                 'position' => $position,
                 'success' => true,
-            ]);
+            ], 500);
         } catch (\Exception $e) {
             DB::rollBack();
-            return Inertia::render('YourComponent', [
+            return Redirect::back()->with([
                 'message' => 'Failed to close position.',
                 'success' => false,
             ]);
@@ -125,14 +128,17 @@ class FuturesPositionController extends Controller
     {
         $entry = $position->entry_price;
         $exit = $exitPrice;
-        $amount = $position->amount;
+        $amount = $position->amount; // This is the margin in USD
         $leverage = $position->leverage;
         $direction = $position->type;
-
+    
+        // Position size in units of the asset
+        $positionSize = ($amount * $leverage) / $entry;
+    
         $priceDiff = $direction === 'long'
             ? $exit - $entry
             : $entry - $exit;
-
-        return $priceDiff * $amount * $leverage;
+    
+        return $priceDiff * $positionSize;
     }
 }
