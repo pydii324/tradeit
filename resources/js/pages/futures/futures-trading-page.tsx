@@ -22,38 +22,47 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const FuturesTradingPage: React.FC = () => {
   const [selectedPair, setSelectedPair] = useState("BTCUSDT");
-  const [currentPrice, setCurrentPrice] = useState<number>(0)
+  const [currentPrice, setCurrentPrice] = useState<number>(0);
+  const [priceChangePercent, setPriceChangePercent] = useState<number>(0);
 
   useEffect(() => {
     if (!selectedPair) return;
   
     const symbol = selectedPair.replace("/", ""); // e.g., BTC/USDT -> BTCUSDT
   
-    const fetchPrice = async () => {
+    const fetchPriceData = async () => {
       try {
-        const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`);
-        const data = await response.json();
-        setCurrentPrice(parseFloat(data.price));
+        // Fetch both the last price and 24hr stats
+        const [priceRes, statsRes] = await Promise.all([
+          fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`),
+          fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`)
+        ])
+  
+        const priceData = await priceRes.json()
+        const statsData = await statsRes.json()
+  
+        setCurrentPrice(parseFloat(priceData.price))
+        setPriceChangePercent(parseFloat(statsData.priceChangePercent))
       } catch (error) {
-        console.error("Failed to fetch price from Binance", error);
+        console.error("Failed to fetch Binance data", error)
       }
-    };
+    }
   
-    fetchPrice(); // initial fetch
+    fetchPriceData()
   
-    // Optional: Auto-refresh every second
-    const interval = setInterval(fetchPrice, 1000);
+    const interval = setInterval(fetchPriceData, 1000) // every second
   
-    return () => clearInterval(interval); // cleanup
-  }, [selectedPair]); // 👈 run this whenever selectedPair changes
+    return () => clearInterval(interval)
+  }, [selectedPair])
+  
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Futures Trading" />
 
-      <div className="grid grid-cols-12 gap-4 p-4">
+      <div className="flex flex-col gap-4 p-4">
         {/* Left Column: Chart, Order Form, Positions */}
-        <div className="col-span-12 lg:col-span-8 space-y-4">
+        <div className="space-y-4">
           <Card>
               <TradingViewChart symbol={selectedPair} height={400} />
           </Card>
@@ -61,7 +70,8 @@ const FuturesTradingPage: React.FC = () => {
             <FuturesTradingForm
               selectedPair={selectedPair}
               onPairChange={setSelectedPair}
-              currentPrice={currentPrice} />
+              currentPrice={currentPrice}
+              priceChangePercent={priceChangePercent} />
           </Card>
           <Card>
             <PositionsTable
@@ -69,12 +79,7 @@ const FuturesTradingPage: React.FC = () => {
           </Card>
         </div>
 
-        {/* Right Column: Order Book */}
-        <div className="col-span-12 lg:col-span-4">
-          <Card className="h-full">
-            <OrderBook />
-          </Card>
-        </div>
+        
       </div>
     </AppLayout>
   );

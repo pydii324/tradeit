@@ -27,15 +27,18 @@ const PositionsTable = ({ currentPrice }: PositionsTableProps) => {
   const { open_positions } = usePage().props;
 
   const calculatePNL = (position: Position, currentPrice: number) => {
-    const size = position.amount * position.leverage
-    const entry = position.entry_price
-
-    if (position.type === "short") {
+    const { amount: margin, entry_price: entry, leverage, type } = position
+  
+    // Calculate actual position size (contracts)
+    const size = (margin * leverage) / entry
+  
+    if (type === "short") {
       return (entry - currentPrice) * size
     } else {
       return (currentPrice - entry) * size
     }
   }
+  
 
   return (
     <div className="p-4">
@@ -60,7 +63,9 @@ const PositionsTable = ({ currentPrice }: PositionsTableProps) => {
             {open_positions.length > 0 ? (
               open_positions.map((position) => (
                 <tr key={position.id} className="border-b">
-                  <td className="py-2 font-bold">{position.market}</td>
+                  <td className="py-2 font-bold">
+                    {position.market} {position.type === "long" ? "Long" : "Short"}
+                  </td>
                   <td className="py-2">${position.amount * position.leverage}</td>
                   <td className="py-2">{position.leverage}x</td>
                   <td className="py-2">${Number(position.amount).toFixed(2)}</td>

@@ -19,9 +19,10 @@ type Props = {
   selectedPair: string;
   onPairChange: (pair: string) => void;
   currentPrice: Number;
+  priceChangePercent: Number;
 }
 
-export default function FuturesTradingForm({ selectedPair, onPairChange, currentPrice }: Props) {
+export default function FuturesTradingForm({ selectedPair, onPairChange, currentPrice, priceChangePercent }: Props) {
   const [amount, setAmount] = useState<number>(100)
   const [leverage, setLeverage] = useState<number>(5)
   const [stopLoss, setStopLoss] = useState<number | null>(null)
@@ -113,16 +114,12 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
                 <span className="text-2xl font-bold">${currentPrice.toLocaleString()}</span>
-                <span className="text-emerald-500 text-sm font-medium">+1.24%</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
+                <span className={`text-sm font-medium ${priceChangePercent >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                  {priceChangePercent >= 0 ? "+" : ""}
+                  {priceChangePercent.toFixed(2)}%
+                </span>
               </div>
-              <CardDescription className="text-zinc-400">Last updated: 2 sec ago</CardDescription>
+              <CardDescription className="text-zinc-400">Updates every: 1 sec</CardDescription>
             </div>
           </div>
         </CardHeader>
@@ -391,7 +388,7 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-800 border-zinc-700 text-zinc-100">
                           <SelectItem value="isolated">Isolated</SelectItem>
-                          <SelectItem value="cross">Cross</SelectItem>
+                          <SelectItem value="cross" disabled>Cross</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -436,15 +433,12 @@ export default function FuturesTradingForm({ selectedPair, onPairChange, current
         <CardFooter className="border-t border-zinc-800 py-3 px-6">
           <div className="flex items-center justify-between w-full text-xs text-zinc-400">
             <div className="flex items-center gap-4">
-              <span>
-                24h Change: <span className="text-emerald-500">+1.24%</span>
+              <span>24h Change: <span className={`text-xs font-medium ${priceChangePercent >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                  {priceChangePercent >= 0 ? "+" : ""}{priceChangePercent.toFixed(2)}%
+                </span>
               </span>
               <span>24h High: $43,250.00</span>
               <span>24h Low: $41,780.50</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span>Trading View</span>
-              <ChevronDown className="h-4 w-4" />
             </div>
           </div>
         </CardFooter>
