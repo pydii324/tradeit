@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App\Models\Balance;
 use App\Models\BalanceHistory;
+use App\Models\FuturesTradeHistory;
 use Inertia\Inertia;
 
 class FuturesPositionController extends Controller
@@ -91,6 +92,19 @@ class FuturesPositionController extends Controller
                 'closed_at' => now(),
                 'status' => 'closed',
                 'pnl' => $pnl,
+            ]);
+
+            FuturesTradeHistory::create([
+                'market' => $position->market,
+                'type' => $position->type,
+                'entry_price' => $position->entry_price,
+                'amount' => $position->amount,
+                'leverage' => $position->leverage,
+                'status' => $position->status,
+                'exit_price' => $position->exit_price,
+                'pnl' => $position->pnl,
+                'closed_at' => $position->closed_at,
+                'user_id' => $position->user_id,
             ]);
 
             $balance = Balance::firstOrCreate(

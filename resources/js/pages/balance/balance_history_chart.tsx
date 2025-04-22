@@ -135,15 +135,9 @@ export function BalanceHistoryChart() {
 
   const { balance_history } = usePage().props;
 
-  console.log(balance_history);
-
   const filteredData = balance_history.filter((item) => {
-    // Ensure correct format for the date string (remove microseconds)
-    const formattedDateString = item.created_at.split('.')[0] + 'Z';
-    console.log(formattedDateString);
-  
     // Create the Date object for the created_at field
-    const date = new Date(formattedDateString); // Ensure correct format
+    const date = new Date(item.date); // Ensure correct format
     const referenceDate = new Date("2024-06-30"); // Reference date
     
     let daysToSubtract = 90; // Default to 90 days

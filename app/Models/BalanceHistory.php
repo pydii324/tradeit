@@ -12,6 +12,7 @@ class BalanceHistory extends Model
 {
     protected $fillable = [
         'balance',
+        'date',
         'user_id',
     ];
 
@@ -20,12 +21,8 @@ class BalanceHistory extends Model
         return $this->belongsTo(Balance::class);
     }
 
-    /** 
-     * Method for getting the balance history, grouped by months
-     * Метод за взимане на историята на баланса, групирани за седмица
-     */
-    public static function getLast50()
+    public function getFormattedCreatedAtAttribute()
     {
-        //
+        return $this->created_at->toIso8601String();
     }
 }

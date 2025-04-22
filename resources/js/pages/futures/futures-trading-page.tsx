@@ -8,6 +8,7 @@ import TradingViewChart from "@/components/charts/tradingview-chart";
 import FuturesTradingForm from "@/components/futures/futures-trading-form";
 import PositionsTable from "@/components/futures/positions-table";
 import { Card } from "@/components/ui/card";
+import PositionHistory from "@/components/futures/position-history";
 
 const breadcrumbs: BreadcrumbItem[] = [
   {
@@ -78,6 +79,9 @@ const FuturesTradingPage: React.FC = () => {
             <PositionsTable
               currentPrice={currentPrice} 
             />
+          </Card>
+          <Card>
+            <PositionHistory/>
           </Card>
         </div>
 

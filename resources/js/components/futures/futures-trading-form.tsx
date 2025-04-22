@@ -344,7 +344,7 @@ export default function FuturesTradingForm({positions, selectedPair, onPairChang
                       <span className="font-medium">${balance.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-zinc-400">Position size</span>
+                      <span className="text-zinc-400">Max Position</span>
                       <span className="font-medium">${(10000 * leverage).toLocaleString()}</span>
                     </div>
                   </div>
